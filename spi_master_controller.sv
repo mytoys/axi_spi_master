@@ -39,6 +39,7 @@ module spi_master_controller
     output logic                   [31:0] spi_ctrl_data_rx,
     output logic                          spi_ctrl_data_rx_valid,
     input  logic                          spi_ctrl_data_rx_ready,
+    output logic                    [3:0] spi_oen,
     output logic                          spi_clk,
     output logic                          spi_csn0,
     output logic                          spi_csn1,
@@ -524,9 +525,11 @@ module spi_master_controller
       do_rx       <= 1'b0;
       do_tx       <= 1'b0;
       spi_mode    <= `SPI_QUAD_RX;
+      spi_oen     <= 4'b1111;
     end
     else
     begin
+      spi_oen     <= spi_en_tx ? (en_quad ? 4'b0000 : 4'b1110) : 4'b1111;
       state <= state_next;
       spi_mode <= s_spi_mode;
       if (spi_qrd || spi_qwr)
